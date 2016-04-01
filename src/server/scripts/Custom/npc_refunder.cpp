@@ -53,7 +53,7 @@ public:
 				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_MONEY_BAG, "|TInterface/ICONS/INV_Misc_Coin_02:35:35:-22:0|tCLICK TO REFUND.", 2, action);
 
 				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_MONEY_BAG, "|TInterface/ICONS/Ability_Spy:25:25:-22:0|tBack..", 10, 0);
-				player->SEND_GOSSIP_MENU("Upgrading an item will let you keep the previous item, but also add a new version of it with extra stats. The first upgrade will add resilience to your item. All the upgrades you may have done on your previous item will not be transfered to your new item.", creature->GetGUID());
+				player->SEND_GOSSIP_MENU(10, creature->GetGUID());
 				return true;
 			}
 			else
