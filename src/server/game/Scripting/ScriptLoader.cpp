@@ -1435,7 +1435,7 @@ void AddSC_announce_login();
 void AddSC_Boss_Announcer();
 void AddSC_Duel_Reset();
 void AddSC_TitleNpc();
-
+void AddSC_Refunder();
 
 #endif
 
@@ -1463,7 +1463,7 @@ AddSC_announce_login();
 AddSC_Boss_Announcer();
 AddSC_Duel_Reset();
 AddSC_TitleNpc();
-
+AddSC_Refunder();
 
 #endif
 }
