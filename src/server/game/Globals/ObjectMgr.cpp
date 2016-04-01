@@ -2334,7 +2334,7 @@ void ObjectMgr::LoadItemTemplates()
     //                                            126                 127                     128            129            130            131         132         133
                                              "GemProperties, RequiredDisenchantSkill, ArmorDamageModifier, duration, ItemLimitCategory, HolidayId, ScriptName, DisenchantID, "
     //                                           134        135            136
-                                             "FoodType, minMoneyLoot, maxMoneyLoot, flagsCustom FROM item_template");
+                                             "FoodType, minMoneyLoot, maxMoneyLoot, flagsCustom, DP FROM item_template");
 
     if (!result)
     {
@@ -2459,6 +2459,7 @@ void ObjectMgr::LoadItemTemplates()
         itemTemplate.MinMoneyLoot            = fields[135].GetUInt32();
         itemTemplate.MaxMoneyLoot            = fields[136].GetUInt32();
         itemTemplate.FlagsCu                 = fields[137].GetUInt32();
+		itemTemplate.DP						 = fields[138].GetUInt16();
 
         // Checks
 

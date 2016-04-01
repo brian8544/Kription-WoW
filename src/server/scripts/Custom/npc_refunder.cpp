@@ -1,3 +1,5 @@
+#include "../scripts/PrecompiledHeaders/ScriptPCH.h"
+
 class RefundMaster : public CreatureScript
 {
 public:

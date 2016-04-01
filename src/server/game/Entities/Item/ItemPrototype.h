@@ -662,6 +662,7 @@ struct ItemTemplate
     uint32 MinMoneyLoot;
     uint32 MaxMoneyLoot;
     uint32 FlagsCu;
+	uint32 DP;
 
     // helpers
     bool CanChangeEquipStateInCombat() const
