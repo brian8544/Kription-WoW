@@ -111,6 +111,7 @@ public:
     const char * GetSlotName(uint8 slot, WorldSession* session) const;
     std::string GetItemLink(Item* item, WorldSession* session) const;
     std::string GetItemLink(uint32 entry, WorldSession* session) const;
+	std::string GetItemName(uint32 entry, WorldSession* session);
     uint32 GetFakeEntry(const Item* item);
     void UpdateItem(Player* player, Item* item) const;
     void DeleteFakeEntry(Player* player, Item* item);
