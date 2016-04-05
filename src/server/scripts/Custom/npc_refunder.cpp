@@ -67,7 +67,7 @@ public:
 			if (Item* invItem = player->GetItemByPos(INVENTORY_SLOT_BAG_0, action))
 			{
 				player->DestroyItemCount(invItem->GetEntry(), 1, true);
-				LoginDatabase.PExecute("UPDATE fusionsite.account_data SET DP = DP + %u", invItem->GetTemplate()->DP);
+				LoginDatabase.PExecute("UPDATE fusionsite.account_data SET DP = DP + %u WHERE id = %u", invItem->GetTemplate()->DP, player->GetSession()->GetAccountId());
 				player->GetSession()->SendNotification("You have been refunded %u Donation Points", invItem->GetTemplate()->DP);
 				player->PlayerTalkClass->SendCloseGossip();
 			}
