@@ -19,7 +19,7 @@
 #include "Pet.h"
 
 uint32 vip_auras[] = { 20217, 48101, 58449, 54494, 24752, 21562, 48100 };
-uint32 auras[] = { 48469, 66068, 56525, 15366, 48073, 48161, 48169, 42995 };
+uint32 auras[] = { 24705, 16609, 22888, 24425, 15366, 43223, 48100 };
 
 class buff_commandscript : public CommandScript
 {

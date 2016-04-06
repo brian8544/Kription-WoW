@@ -75,11 +75,11 @@ enum Races
     RACE_GOBLIN             = 9,
     RACE_BLOODELF           = 10,
     RACE_DRAENEI            = 11,
-    RACE_FEL_ORC            = 12,
-    //RACE_NAGA               = 13,
-    RACE_BROKEN             = 14
-    //RACE_SKELETON           = 15,
-    //RACE_VRYKUL             = 16
+    //RACE_FEL_ORC            = 12,
+    RACE_NAGA               = 13,
+    RACE_BROKEN             = 14,
+    //RACE_WORGEN             = 15,
+    RACE_VRYKUL             = 16
     //RACE_TUSKARR            = 17
     //RACE_FOREST_TROLL       = 18,
     //RACE_TAUNKA             = 19,
@@ -88,18 +88,18 @@ enum Races
 };
 
 // max+1 for player race
-#define MAX_RACES         15
+#define MAX_RACES         17
 
 #define RACEMASK_ALL_PLAYABLE \
     ((1<<(RACE_HUMAN-1))   |(1<<(RACE_ORC-1))          |(1<<(RACE_DWARF-1))   | \
      (1<<(RACE_NIGHTELF-1))|(1<<(RACE_UNDEAD_PLAYER-1))|(1<<(RACE_TAUREN-1))  | \
      (1<<(RACE_GNOME-1))   |(1<<(RACE_TROLL-1))        |(1<<(RACE_BLOODELF-1))| \
-     (1<<(RACE_DRAENEI-1)) |(1<<(RACE_GOBLIN-1))       |(1<<(RACE_FEL_ORC-1)) | \
-     (1<<(RACE_BROKEN-1)))
+     (1<<(RACE_DRAENEI-1)) |(1<<(RACE_GOBLIN-1))       | \
+     (1<<(RACE_BROKEN-1))  |(1<<(RACE_NAGA-1))		   |(1<<(RACE_VRYKUL-1)))
 
 #define RACEMASK_ALLIANCE \
     ((1<<(RACE_HUMAN-1)) | (1<<(RACE_DWARF-1)) | (1<<(RACE_NIGHTELF-1)) | \
-     (1<<(RACE_GNOME-1)) | (1<<(RACE_DRAENEI-1))  | (1<<(RACE_BROKEN-1)))
+     (1<<(RACE_GNOME-1)) | (1<<(RACE_DRAENEI-1))  |(1<<(RACE_BROKEN-1)) |(1<<(RACE_NAGA-1)))
 
 #define RACEMASK_HORDE RACEMASK_ALL_PLAYABLE & ~RACEMASK_ALLIANCE
 

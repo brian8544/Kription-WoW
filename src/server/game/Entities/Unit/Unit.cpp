@@ -16753,7 +16753,6 @@ uint32 Unit::GetModelForTotem(PlayerTotemType totemType)
 	switch (getRace())
 	{
 	case RACE_GOBLIN:
-	case RACE_FEL_ORC:
 	case RACE_ORC:
 	{
 		switch (totemType)
@@ -16874,6 +16873,7 @@ uint32 Unit::GetModelForTotem(PlayerTotemType totemType)
 		}
 		break;
 	}
+	case RACE_VRYKUL:
 	case RACE_TAUREN:
 	{
 		switch (totemType)
@@ -16889,6 +16889,7 @@ uint32 Unit::GetModelForTotem(PlayerTotemType totemType)
 		}
 		break;
 	}
+	case RACE_NAGA:
 	case RACE_BROKEN:
 	case RACE_DRAENEI:
 	{
