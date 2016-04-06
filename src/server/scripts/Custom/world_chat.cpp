@@ -1,196 +1,91 @@
-#include "ScriptMgr.h"
-#include "Cell.h"
-#include "CellImpl.h"
-#include "GameEventMgr.h"
-#include "GridNotifiers.h"
-#include "GridNotifiersImpl.h"
-#include "Unit.h"
-#include "GameObject.h"
-#include "ScriptedCreature.h"
-#include "ScriptedGossip.h"
-#include "InstanceScript.h"
-#include "CombatAI.h"
-#include "PassiveAI.h"
-#include "Chat.h"
-#include "DBCStructure.h"
-#include "DBCStores.h"
-#include "ObjectMgr.h"
-#include "SpellScript.h"
-#include "SpellAuraEffects.h"
- 
-#define FACTION_SPECIFIC 0
- 
-std::string GetNameLink(Player* player)
-{
-        std::string name = player->GetName();
-        std::string color;
-        switch(player->getClass())
-        {
-        case CLASS_DEATH_KNIGHT:
-                color = "|cffC41F3B|TInterface\\icons\\spell_deathknight_classicon:15|t";
-                break;
-        case CLASS_DRUID:
-                color = "|cffFF7D0A|TInterface\\icons\\ability_druid_maul:15|t";
-                break;
-        case CLASS_HUNTER:
-                color = "|cffABD473|TInterface\\icons\\inv_weapon_bow_07:15|t";
-                break;
-        case CLASS_MAGE:
-                color = "|cff69CCF0|TInterface\\icons\\inv_staff_13:15|t";
-                break;
-        case CLASS_PALADIN:
-                color = "|cffF58CBA|TInterface\\icons\\ability_thunderbolt:15|t";
-                break;
-        case CLASS_PRIEST:
-                color = "|cffFFFFFF|TInterface\\icons\\inv_staff_30:15|t";
-                break;
-        case CLASS_ROGUE:
-                color = "|cffFFF569|TInterface\\icons\\inv_throwingknife_04:15|t";
-                break;
-        case CLASS_SHAMAN:
-                color = "|cff0070DE|TInterface\\icons\\spell_nature_bloodlust:15|t";
-                break;
-        case CLASS_WARLOCK:
-                color = "|cff9482C9|TInterface\\icons\\spell_nature_drowsy:15|t";
-                break;
-       case CLASS_WARRIOR:
-               color = "|cffC79C6E|TInterface\\icons\\inv_sword_27:15|t";
-               break;
-			   
-        }
-        return "|Hplayer:"+name+"|h|cffFFFFFF["+color+name+"|cffFFFFFF]|h|r";
-}
- 
-class World_Chat : public CommandScript
-{
-        public:
-                World_Chat() : CommandScript("World_Chat"){}
- 
-        ChatCommand * GetCommands() const
-        {
-                static ChatCommand WorldChatCommandTable[] =
-                {
-					{ "chat", SEC_PLAYER, true, &HandleWorldChatCommand, "", NULL },
-                        {NULL,          0,                              false,          NULL,                                           "", NULL}
-                };
- 
-                return WorldChatCommandTable;
-        }
- 
-        static bool HandleWorldChatCommand(ChatHandler * handler, const char * args)
-        {
-                if (!handler->GetSession()->GetPlayer()->CanSpeak())
-                        return false;
-                std::string temp = args;
- 
-                if (!args || temp.find_first_not_of(' ') == std::string::npos)
-                        return false;
- 
-                std::string msg = "";
-                Player * player = handler->GetSession()->GetPlayer();
- 
-                switch(player->GetSession()->GetSecurity())
-                {
-                        // Player
-                        case SEC_PLAYER:
-                                if (player->GetTeam() == ALLIANCE)
-                      {
-                                msg += "|cffFF0000[Kription WoW]|TInterface\\icons\\Inv_Misc_Tournaments_banner_Human:15|t ";
-                                msg += GetNameLink(player);
-                                msg += " |cfffaeb00";
-                      }
-
-                      else
-                     {
-                               msg += "|cffFF0000[Kription WoW]|TInterface\\icons\\Inv_Misc_Tournaments_banner_Orc:15|t ";
-                               msg += GetNameLink(player);
-                               msg += " |cfffaeb00"; 
-                   }
-                               break;
-                        // VIP
-                        case SEC_VIP:
-						        if (player->GetTeam() == ALLIANCE)
-                      {
-                                msg += "|cffFF0000[Kription WoW]|TInterface\\icons\\INV_Misc_Token_ArgentDawn3:15|t |cffFFFF00[V.I.P]|TInterface\\icons\\Inv_Misc_Tournaments_banner_Human:15|t ";
-                                msg += GetNameLink(player);
-                                msg += " |cfffaeb00";
-                      }
-
-                      else
-                     {
-                               msg += "|cffFF0000[Kription WoW]|TInterface\\icons\\INV_Misc_Token_ArgentDawn3:15|t |cffFFFF00[V.I.P]|TInterface\\icons\\Inv_Misc_Tournaments_banner_Orc:15|t ";
-                               msg += GetNameLink(player);
-                               msg += " |cfffaeb00"; 
-                   }
-                                break;
-                        // Trial GM
-                        case SEC_MODERATOR:
-                                msg += "|cffFF0000[Kription WoW]|TInterface\\icons\\Mail_GMIcon:15|t |cffFF8C00[Trial GM] ";
-                                msg += GetNameLink(player);
-                                msg += " |cfffaeb00";
-                                break;
-                        // GM
-                        case SEC_GAMEMASTER:
-                                msg += "|cffFF0000[Kription WoW]|TInterface\\icons\\Mail_GMIcon:15|t |cffFF8C00[GM] ";
-                                msg += GetNameLink(player);
-                                msg += " |cfffaeb00";
-                                break;
-                      // HeaD GM
-                        case SEC_ADMINISTRATOR:
-                                msg += "|cffFF0000[Kription WoW]|TInterface\\icons\\Mail_GMIcon:15|t |cffFF8C00[Head GM] ";
-                                msg += GetNameLink(player);
-                                msg += " |cfffaeb00";
-                                break;
-					 // Admin
-                        case SEC_DEV:
-                                msg += "|cffFF0000[Kription WoW]|TInterface\\icons\\Mail_GMIcon:15|t |cffFFA500[DEV] ";
-                                msg += GetNameLink(player);
-                                msg += " |cfffaeb00";
-								break;
-                        // Admin
-                        case SEC_HD:
-                                msg += "|cffFF0000[Kription WoW]|TInterface\\icons\\Mail_GMIcon:15|t |cffFFA500[Admin] ";
-                                msg += GetNameLink(player);
-                                msg += " |cfffaeb00";
-								break;
-		              // Admin
-                        case SEC_HA:
-                                msg += "|cffFF0000[Kription WoW]|TInterface\\icons\\Mail_GMIcon:15|t |cffFFA500[Head Admin] ";
-                                msg += GetNameLink(player);
-                                msg += " |cfffaeb00";
-								break;
-                        // Co-Owner
-                        case SEC_CO:
-                                msg += "|cffFF0000[Kription WoW]|TInterface\\icons\\Mail_GMIcon:15|t |cffFF0000[Co-Owner] ";
-                                msg += GetNameLink(player);
-                                msg += " |cfffaeb00";
-								break;
-                        // Owner
-                        case SEC_O:
-                                msg += "|cffFF0000[Kription WoW]|TInterface\\icons\\Mail_GMIcon:15|t |cffFF0000[Owner] ";
-                                msg += GetNameLink(player);
-                                msg += " |cfffaeb00";
-								break;
-
-                }
-                       
-                msg += args;
-                if (FACTION_SPECIFIC)
-                {
-                        SessionMap sessions = sWorld->GetAllSessions();
-                        for (SessionMap::iterator itr = sessions.begin(); itr != sessions.end(); ++itr)
-                                if (Player* plr = itr->second->GetPlayer())
-                                        if (plr->GetTeam() == player->GetTeam())
-                                                sWorld->SendServerMessage(SERVER_MSG_STRING, msg.c_str(), plr);
-                }
-                else
-                        sWorld->SendServerMessage(SERVER_MSG_STRING, msg.c_str(), 0);  
- 
-                return true;
-        }
-};
- 
-void AddSC_World_Chat()
-{
-        new World_Chat;
-}
++class RefundMaster : public CreatureScript
++{
++public:
++	RefundMaster() : CreatureScript("RefundMaster") { }
+Add a comment to this line
++
++	bool OnGossipHello(Player* player, Creature* creature) override
++	{
++		WorldSession* session = player->GetSession();
++		bool found = false;
++		for (uint8 slot = EQUIPMENT_SLOT_START; slot < EQUIPMENT_SLOT_END; ++slot)
++		{
++			Item* newItem = player->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
++			if (newItem && newItem->GetTemplate()->DP > 0)
++			{
++				if (const char* slotName = sTransmogrification->GetSlotName(slot, session))
++				{
++					std::string icon = sTransmogrification->GetItemIcon(newItem->GetEntry(), 33, 33, -21, 0);
++					player->ADD_GOSSIP_ITEM(GOSSIP_ICON_DOT, icon + std::string(slotName), 1, slot);
++					found = true;
++				}
++			}
++		}
++		if (!found)
++		{
++			player->GetSession()->SendNotification("You do not have any items equipped that can be refunded.");
++			return true;
++		}
++		player->ADD_GOSSIP_ITEM(GOSSIP_ICON_MONEY_BAG, "|TInterface/ICONS/Ability_Spy:35:35:-22:0|tNo thanks.", 11, 0);
++		player->SEND_GOSSIP_MENU(10, creature->GetGUID());
++
++		return true;
++	}
++
++	bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action) override
++	{
++		player->PlayerTalkClass->ClearMenus();
++
++		if (sender == 1)
++		{
++			if (Item* invItem = player->GetItemByPos(INVENTORY_SLOT_BAG_0, action))
++			{
++				char price[250];
++				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_MONEY_BAG, "|TInterface/ICONS/Ability_Paladin_BlessedHands:35:35:-22:0|tSelected item:", sender, action);
++				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_MONEY_BAG, sTransmogrification->GetItemIcon(invItem->GetEntry(), 25, 25, -22, 0) + sTransmogrification->GetItemName(invItem->GetEntry(), player->GetSession()).c_str(), sender, action);
++
++				snprintf(price, 250, "|TInterface/ICONS/Achievement_BG_returnXflags_def_WSG:35:35:-22:0|tCan be refunded for: |cffFF0000%u|r Donation Points", invItem->GetTemplate()->DP);
++				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_MONEY_BAG, price, sender, action);
++
++				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_MONEY_BAG, "---------------------------------", sender, action);
++
++				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_MONEY_BAG, "|TInterface/ICONS/INV_Misc_Coin_02:35:35:-22:0|tCLICK TO REFUND.", 2, action);
++
++				player->ADD_GOSSIP_ITEM(GOSSIP_ICON_MONEY_BAG, "|TInterface/ICONS/Ability_Spy:25:25:-22:0|tBack..", 10, 0);
++				player->SEND_GOSSIP_MENU("Upgrading an item will let you keep the previous item, but also add a new version of it with extra stats. The first upgrade will add resilience to your item. All the upgrades you may have done on your previous item will not be transfered to your new item.", creature->GetGUID());
++				return true;
++			}
++			else
++			{
++				player->GetSession()->SendNotification("You do not have any items that can be refunded.");
++				player->PlayerTalkClass->SendCloseGossip();
++			}
++		}
++		else if (sender == 2)
++		{
++			if (Item* invItem = player->GetItemByPos(INVENTORY_SLOT_BAG_0, action))
++			{
++				player->DestroyItemCount(invItem->GetEntry(), 1, true);
++				LoginDatabase.PExecute("UPDATE fusionsite.account_data SET DP = DP + %u", invItem->GetTemplate()->DP);
++				player->GetSession()->SendNotification("You have been refunded %u Donation Points", invItem->GetTemplate()->DP);
++				player->PlayerTalkClass->SendCloseGossip();
++			}
++			else
++			{
++				player->GetSession()->SendNotification("You do not have any items that can be refunded.");
++				player->PlayerTalkClass->SendCloseGossip();
++			}
++		}
++		else if (sender == 10)
++			OnGossipHello(player, creature);
++		else if (sender == 11)
++			player->PlayerTalkClass->SendCloseGossip();
++
++		return true;
++	}
++};
++
++void AddSC_Refunder()
++{
++	new RefundMaster();
++}
