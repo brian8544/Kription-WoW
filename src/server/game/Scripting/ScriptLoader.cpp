@@ -1431,11 +1431,10 @@ void AddSC_hva_commandscript();
 void AddSC_System_Censure();
 void AddSC_gamble_npc();
 void AddSC_npc_supporter();
-void AddSC_announce_login();
-void AddSC_Boss_Announcer();
+//void AddSC_Boss_Announcer();
 void AddSC_Duel_Reset();
 void AddSC_TitleNpc();
-
+void AddSC_Refunder();
 
 #endif
 
@@ -1459,11 +1458,11 @@ AddSC_hva_commandscript();
 AddSC_System_Censure();
 AddSC_gamble_npc();
 AddSC_npc_supporter();
-AddSC_announce_login();
-AddSC_Boss_Announcer();
+
+//AddSC_Boss_Announcer();
 AddSC_Duel_Reset();
 AddSC_TitleNpc();
-
+AddSC_Refunder();
 
 #endif
 }

@@ -140,6 +140,17 @@ std::string Transmogrification::GetItemIcon(uint32 entry, uint32 width, uint32 h
     return ss.str();
 }
 
+std::string Transmogrification::GetItemName(uint32 entry, WorldSession* session)
+{
+	const ItemTemplate* itemTemplate = sObjectMgr->GetItemTemplate(entry);
+	std::string name = itemTemplate->Name1;
+	int loc_idx = session->GetSessionDbLocaleIndex();
+	if (loc_idx >= 0)
+		if (ItemLocale const* il = sObjectMgr->GetItemLocale(itemTemplate->ItemId))
+			sObjectMgr->GetLocaleString(il->Name, loc_idx, name);
+	return name;
+}
+
 std::string Transmogrification::GetSlotIcon(uint8 slot, uint32 width, uint32 height, int x, int y) const
 {
     TC_LOG_DEBUG("custom.transmog", "Transmogrification::GetSlotIcon");
